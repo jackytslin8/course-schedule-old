@@ -311,7 +311,7 @@
     
     <button class="export-btn" onclick="exportData()">📥 匯出備份</button>
     <button class="import-btn" onclick="document.getElementById('importFile').click()">📤 匯入備份</button>
-    <button class="import-btn merge-btn" onclick="importDataWithMerge()">📥 合併匯入</button>
+    <button class="import-btn merge-btn" onclick="document.getElementById('mergeFile').click()">📥 合併匯入</button>
     <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
     <input type="file" id="mergeFile" style="display:none" accept=".json" onchange="importDataWithMerge(event)">
     
