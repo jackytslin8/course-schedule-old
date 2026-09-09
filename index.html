@@ -311,7 +311,9 @@
     
     <button class="export-btn" onclick="exportData()">📥 匯出備份</button>
     <button class="import-btn" onclick="document.getElementById('importFile').click()">📤 匯入備份</button>
+    <button class="import-btn merge-btn" onclick="importDataWithMerge()">📥 合併匯入</button>
     <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+    <input type="file" id="mergeFile" style="display:none" accept=".json" onchange="importDataWithMerge(event)">
     
     <!-- Modal -->
     <div class="modal" id="editModal">
@@ -600,7 +602,7 @@
             URL.revokeObjectURL(url);
         }
         
-        // 匯入資料
+        // 匯入資料（覆蓋模式）
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -620,6 +622,42 @@
                 }
             };
             reader.readAsText(file);
+            event.target.value = '';
+        }
+        
+        // 合併匯入資料（保留現有資料）
+        function importDataWithMerge(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    let mergeCount = 0;
+                    let newCount = 0;
+                    
+                    for (const dateKey in imported) {
+                        if (scheduleData[dateKey]) {
+                            // 日期已存在，合併資料
+                            scheduleData[dateKey] = scheduleData[dateKey].concat(imported[dateKey]);
+                            mergeCount++;
+                        } else {
+                            // 新日期，直接新增
+                            scheduleData[dateKey] = imported[dateKey];
+                            newCount++;
+                        }
+                    }
+                    
+                    saveData();
+                    renderCalendar();
+                    alert(`合併成功！\n- 合併到現有日期: ${mergeCount} 筆\n- 新增日期: ${newCount} 筆`);
+                } catch (err) {
+                    alert('檔案格式錯誤');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
         }
         
         // 點擊外部關閉 modal
@@ -635,3 +673,11 @@
 </body>
 </html>
 
+
+        /* Merge button style */
+        .merge-btn {
+            background: #1abc9c;
+        }
+        .merge-btn:hover {
+            background: #16a085;
+        }
