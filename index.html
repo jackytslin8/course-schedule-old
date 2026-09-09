@@ -103,6 +103,12 @@
             font-size: 12px;
             color: #666;
         }
+        .date-holiday {
+            font-size: 11px;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 2px;
+        }
         .class-entry {
             background: #e3f2fd;
             border-radius: 4px;
@@ -421,6 +427,12 @@
                     <span class="date-lunar">${lunar}</span>
                 </div>`;
                 
+                // 顯示節日
+                const holiday = getHoliday(dateKey);
+                if (holiday) {
+                    html += `<div class="date-holiday">${holiday}</div>`;
+                }
+                
                 entries.forEach((entry, idx) => {
                     html += `<div class="class-entry">
                         <span class="delete-btn" onclick="deleteEntry(event, '${dateKey}', ${idx})">&times;</span>
@@ -446,6 +458,21 @@
                               '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
             // 簡化：直接返回數字對應的農曆（實際應計算）
             return lunarDays[(day - 1) % 30];
+        }
+        
+        // 台灣節日數據 (2026/9 - 2027/1)
+        const holidays = {
+            '2026-09-28': '教師節',
+            '2026-10-10': '國慶日',
+            '2026-10-25': '光復節',
+            '2027-01-01': '元旦',
+            '2027-01-02': '元旦放假',
+            '2027-01-03': '元旦放假'
+        };
+        
+        // 獲取節日
+        function getHoliday(dateKey) {
+            return holidays[dateKey] || '';
         }
         
         // 開啟編輯視窗
